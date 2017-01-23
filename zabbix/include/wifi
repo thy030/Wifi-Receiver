@@ -1,0 +1,19 @@
+# Developed by Keith Cheng, Yeung Yeung Date: 2016 Nov 11
+#
+# This config file is used for wifi scanning. Result will included ESSID, BSSID, Signal(RSSI), Channel
+#
+# ************************* item key = wifi.discovery *************************
+#
+# exemple: {"data":[{"{#ESSID}":"vbot", "{#BSSID}":"2c:5d:93:xx:xx;xx"]}
+#
+# ************************************************************************************* ************ Make sure include=/etc/"agent root dir"/wifi was modified
+# ************** *************************************************************************************
+#
+UserParameter=wifi.discovery,wpa_cli scan_result |awk 'BEGIN{printf "{\"data\":["};$1~/[0-9]/{printf c"{\"{#ESSID}\":\""$NF"\",\"{#BSSID}\":\""$1"\"}";c=","};END{print "]}"}' |sed "s/\\\\x00//g"
+#
+# iw link states (you need {#IF} as parameter, default 'wlan0') Get the connected info
+#
+#
+UserParameter=wifi.scan.signal[*],wpa_cli scan_result |grep $1 |awk '{print $$3}'
+UserParameter=wifi.scan.channel[*],wpa_cli scan_result |grep $1 |awk '{print $$4}'
+
